@@ -1,36 +1,31 @@
+
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import pyqtSlot
+from PyQt6.QtWidgets import QApplication, QWidget, QDialog, QWidget, QMainWindow, QLabel
+from PyQt6 import uic
 
 
-def window():
-   app = QApplication(sys.argv)
-   widget = QWidget()
-
-   button1 = QPushButton(widget)
-   button1.setText("Button1")
-   button1.move(64, 32)
-   button1.clicked.connect(button1_clicked)
-
-   button2 = QPushButton(widget)
-   button2.setText("Button2")
-   button2.move(64, 64)
-   button2.clicked.connect(button2_clicked)
-
-   widget.setGeometry(50, 50, 320, 200)
-   widget.setWindowTitle("PyQt5 Button Click Example")
-   widget.show()
-   sys.exit(app.exec_())
-
-
-def button1_clicked():
-   print("Button 1 clicked")
-
-
-def button2_clicked():
-   print("Button 2 clicked")
+class App(QWidget):
+   def __init__(self):
+      super().__init__()
+      uic.loadUi('main.ui', self)
+      self.load_buttons()
+   
+   def load_buttons(self):
+      self.btnToggle.clicked.connect(self.testButtonClicked)
+      print("loading buttons")
+   
+   def testButtonClicked(self):
+      attrs = vars(self)
+      if(self.lblState.text() == "paused"):
+         self.lblState.setText("online")
+      else:
+         self.lblState.setText("paused")
+      
+      print(self.lblState.text())
 
 
 if __name__ == '__main__':
-   window()
+   app = QApplication(sys.argv)
+   window = App()
+   window.show()
+   sys.exit(app.exec())
