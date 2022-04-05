@@ -1,23 +1,31 @@
 
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QDialog, QWidget, QMainWindow, QLabel
+from PyQt6.QtWidgets import QApplication, QWidget, QDialog, QWidget, QMainWindow, QLabel, QPushButton
 from PyQt6 import uic
 from PyQt6.QtCore import QTimer
-from QAccepter import QAccepter
-
+from classes.QAccepter import QAccepter
+import os
 
 class App(QWidget):
+   lblState: QLabel
+   btnToggle: QPushButton
+   stateColor = {
+      "paused": "background-color: rgb(206, 0, 3);",
+      "default": "background-color: rgb(0, 255, 0);"
+   }
+
    def __init__(self):
       super().__init__()
-      uic.loadUi('main.ui', self)
+      dir_path = os.path.dirname(os.path.realpath(__file__))
+      uic.loadUi(dir_path+'\\main.ui', self)
       self.load_buttons()
       self.timer = QTimer(self)
-      self.timer.timeout.connect(self.update)
-      self.timer.start(100)
+      self.timer.timeout.connect(self.updateUI)
+      self.timer.start(200)
       self.qaccepter = QAccepter()
       self.qaccepter.start()
    
-   def update(self):
+   def updateUI(self):
       self.lblState.setText(str(self.qaccepter.get_state()))
 
    def load_buttons(self):

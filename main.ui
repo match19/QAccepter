@@ -11,10 +11,22 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>420</width>
+    <height>420</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>420</width>
+    <height>420</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -23,8 +35,8 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(68, 65, 71);
-color: rgb(255, 255, 255);</string>
+   <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(31, 31, 31);</string>
   </property>
   <widget class="QPushButton" name="btnToggle">
    <property name="geometry">
@@ -39,6 +51,9 @@ color: rgb(255, 255, 255);</string>
     <font>
      <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>Toggle</string>
@@ -57,6 +72,9 @@ color: rgb(255, 255, 255);</string>
     <font>
      <pointsize>25</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>online</string>

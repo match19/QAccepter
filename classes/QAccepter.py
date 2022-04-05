@@ -9,7 +9,7 @@ import numpy as np
 import threading
 import pyglet
 import cv2
-from path import *
+from classes.action import *
 
 class QAccepter:
     def __init__(self):
@@ -52,15 +52,15 @@ class QAccepter:
                 continue
             if(self.state == "online"):
                 self.__clickLocation("accept")
-                time.sleep(0.1)
+                time.sleep(0.2)
                 continue
             if(self.state == "lockinphase"):
-                time.sleep(0.1)
+                time.sleep(0.2)
                 self.__lockinChamp()
                 continue
 
     def __findLoc(self, filename):
-        fp = path(filename)
+        fp = get_action_file(filename)
         try:
             win = pygetwindow.getWindowsWithTitle('League of Legends')[0]
             if win.left < 0:
