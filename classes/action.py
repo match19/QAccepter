@@ -21,6 +21,8 @@ def findLocaction(filename: str, win: pygetwindow.Win32Window) -> Tuple[int, int
             return None
 
         fp = get_action_file(filename)
+        if(fp == None):
+            return None
         # Take screenshot of League window
 
         dim = (win.left, win.top, win.left+win.width, win.top+win.height)
@@ -46,7 +48,7 @@ def findLocaction(filename: str, win: pygetwindow.Win32Window) -> Tuple[int, int
 
         # Store the coordinates of matched area in a numpy array
         loc = np.where(res >= threshold)
-        if len(loc[1]) == 0 or len(loc[0]) == 0:
+        if len(loc[1]) < 2 or len(loc[0]) == 0:
             return None
        
         return (loc[1][1], loc[0][0], w, h)
