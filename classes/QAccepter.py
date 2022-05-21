@@ -1,13 +1,11 @@
-import random
-from PIL import Image, ImageGrab
+from typing import Tuple
+from PIL import  ImageGrab
 from win32api import GetSystemMetrics
 import pyautogui
 import pygetwindow
 import time
-import win32gui
 import numpy as np
 import threading
-import pyglet
 import cv2
 from classes.action import *
 
@@ -17,59 +15,61 @@ class QAccepter:
         self.actionThread = None
         self.stateThread = None
         self.paused = True
+        self.debug = False
 
     def start(self):
+        self.state = "ready"
         self.paused = False
         self.stateThread = threading.Thread(target=self.__stateChecker, daemon=True)
         self.actionThread = threading.Thread(target=self.__doAction, daemon=True)
         self.stateThread.start()
         self.actionThread.start()
     
-    def get_state(self):
-        return self.state
-    
     def pause(self):
         self.paused = True
 
+    def get_state(self):
+        return self.state
+ 
     def __stateChecker(self):
         while(True and not self.paused):
             apps = pygetwindow.getAllTitles()
             if("League of Legends (TM) Client" in apps and not self.paused):
                 self.state = "ingame"
                 time.sleep(2)
-                continue
-
-            if("League of Legends" in apps and not self.paused):
+            elif("League of Legends" in apps and not self.paused):
                 self.state = "online"
                 time.sleep(2)
-                continue
+            else:
+                time.sleep(3)
+
         self.state = "paused"
 
     def __doAction(self):
         while(True and not self.paused):
-            if(self.state == "ingame" or self.state == ""):
+            if(self.state == "ingame" or self.state == "ready"):
                 time.sleep(5)
-                continue
-            if(self.state == "online"):
+            elif(self.state == "online"):
                 self.__clickLocation("accept")
                 time.sleep(0.2)
-                continue
-            if(self.state == "lockinphase"):
-                time.sleep(0.2)
-                self.__lockinChamp()
-                continue
+            else:
+                time.sleep(5)
 
-    def __findLoc(self, filename):
+    def __findLocaction(self, filename: str) -> Tuple[int, int, int, int]:
+        """Finds image from action/ folder in screenshot and returns location of image (x,y,width,height)"""
         fp = get_action_file(filename)
+        #Make sure league window is active
         try:
             win = pygetwindow.getWindowsWithTitle('League of Legends')[0]
             if win.left < 0:
-                raise Exception()
+                return None
         except:
             return None
-
+        # Take screenshot of League window
         dim = (win.left, win.top, win.left+win.width, win.top+win.height)
         img_rgb = ImageGrab.grab(bbox=dim)
+
+        # img_rgb.save("temp.png") #Save image for debugging
         img_rgb = np.asarray(img_rgb)
 
         # Convert it to grayscale
@@ -96,8 +96,8 @@ class QAccepter:
             pass
         return retval
 
-    def __clickLocation(self, filename):
-        loc = self.__findLoc(filename)
+    def __clickLocation(self, filename: str) -> bool:
+        loc = self.__findLocaction(filename)
         if(loc != None):
             x, y, width, height = loc
             w = pygetwindow.getWindowsWithTitle('League of Legends')[0]

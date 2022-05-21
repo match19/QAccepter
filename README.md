@@ -1,0 +1,2 @@
+# Compiling
+pyinstaller main.spec

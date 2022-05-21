@@ -1,0 +1,7 @@
+test.py
+info/
+build/
+dist/
+temp.png
+__pycache__/
+.vscode/
