@@ -5,6 +5,8 @@ from PyQt6 import uic
 from PyQt6.QtCore import QTimer
 from classes.QAccepter import QAccepter
 import os
+from pynput.mouse import Listener
+import time
 
 class App(QWidget):
    lblState: QLabel
@@ -36,8 +38,13 @@ class App(QWidget):
          self.qaccepter.start()
       else:
          self.qaccepter.pause()
-   
+
+def on_move(x,y):
+   QAccepter.userActive = True
+   QAccepter.lastActive = time.time()
 if __name__ == '__main__':
+   listener = Listener(on_move=on_move)
+   listener.start()
    app = QApplication(sys.argv)
    window = App()
    window.show()
