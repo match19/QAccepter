@@ -15,7 +15,7 @@ def get_action_file(pattern):
             if fnmatch.fnmatch(name, pattern):
                 return root+"/"+name
 
-def findLocaction(filename: str, win: pygetwindow.Win32Window) -> Tuple[int, int, int, int]:
+def findLocation(filename: str, win: pygetwindow.Win32Window) -> Tuple[int, int, int, int]:
         """Finds image from action/ folder in screenshot and returns location of image (x,y,width,height)"""
         if(not isinstance(win, pygetwindow.Win32Window) or win.left < 0):
             return None
@@ -55,7 +55,7 @@ def findLocaction(filename: str, win: pygetwindow.Win32Window) -> Tuple[int, int
 
 
 def clickLocation(filename: str, win: pygetwindow.Win32Window) -> bool:
-    loc = findLocaction(filename, win)
+    loc = findLocation(filename, win)
     if(loc != None):
         x, y, width, height = loc
         pyautogui.click(win.left+x+width/2, win.top+y+height/2, 2)

@@ -5,8 +5,9 @@ import pyautogui
 import pygetwindow
 import time
 import threading
-import cv2
+from pynput.mouse import Listener
 from classes.action import *
+from services.service_league import *
 
 class QAccepter:
     #Check if user is active
@@ -15,29 +16,33 @@ class QAccepter:
     timeoutActive = 5
 
     def __init__(self):
-        self.state = "ready"
-        self.actionThread = None
-        self.stateThread = None
-        self.paused = True
+        self.__state = "ready"
+        self.__stateThread = None
+        self.__paused = True
+        self.pick_champ = ""
+        self.ban_champ = ""
+        self.champs = get_champs()
 
     def start(self):
-        self.state = "ready"
-        self.paused = False
-        self.stateThread = threading.Thread(target=self.__stateChecker, daemon=True)
-        self.stateThread.start()
+        listener = Listener(on_move=on_move)
+        listener.start()
+        self.__state = "ready"
+        self.__paused = False
+        self.__stateThread = threading.Thread(target=self.__stateChecker, daemon=True)
+        self.__stateThread.start()
     
     def pause(self):
-        self.paused = True
+        self.__paused = True
 
     def get_state(self):
-        return self.state
+        return self.__state
     
     def __checkUserActive(self):
         if time.time() - self.lastActive > QAccepter.timeoutActive:
             QAccepter.userActive = False
 
     def __stateChecker(self):
-        while(True and not self.paused):
+        while(True and not self.__paused):
             self.__checkUserActive()
             apps = pygetwindow.getAllTitles()
             w = pygetwindow.getWindowsWithTitle("League of Legends")
@@ -45,44 +50,49 @@ class QAccepter:
                 w = w[0]
             else:
                 w = None
-            if("League of Legends (TM) Client" in apps and not self.paused):
-                self.state = "ingame"
+            if("League of Legends (TM) Client" in apps and not self.__paused):
+                self.__state = "ingame"
                 time.sleep(2)
-            elif("League of Legends" in apps and not self.paused):
-                if self.state == "select":
-                    if not QAccepter.userActive and findLocaction("ban", w):
-                        click_search(w)
-                        ctrl_a_delete()
-                        pyautogui.write("garen")
-                        time.sleep(1)
-                        click_champ(w)
+            elif("League of Legends" in apps and not self.__paused):
+                if self.__state == "select":
+                    if not QAccepter.userActive and self.ban_champ != "" and findLocation("ban", w):
+                        select_champ(self.ban_champ, w)
                         click_lockin_or_ban(w)
-                    elif not QAccepter.userActive and findLocaction("lockin", w):
-                        click_search(w)
-                        ctrl_a_delete()
-                        pyautogui.write("kayle")
-                        time.sleep(1)
-                        click_champ(w)
-                        self.state = "lockin"
+                    elif not QAccepter.userActive and self.pick_champ != "" and findLocation("lockin", w):
+                        select_champ(self.pick_champ, w)
+                        self.__state = "lockin"
                     else:
-                        self.state = "online"
-                elif self.state == "lockin" and not QAccepter.userActive:
+                        self.__state = "online"
+                elif self.__state == "lockin" and not QAccepter.userActive:
                     click_lockin_or_ban(w)
                     time.sleep(1)
-                    if findLocaction("lockin", w) == None:
-                        self.state = "online"
-                elif not QAccepter.userActive and findLocaction("search_champ", w):
-                    self.state = "select"
+                    if findLocation("lockin", w) == None:
+                        self.__state = "online"
+                elif not QAccepter.userActive and findLocation("search_champ", w):
+                    self.__state = "select"
                 else:
                     clickLocation("accept", w)
-                    self.state = "online"
-                print(QAccepter.userActive, self.state)
+                    self.__state = "online"
+                print(QAccepter.userActive, self.__state)
                 time.sleep(2)
             else:
                 time.sleep(3)
 
-        self.state = "paused"
+        self.__state = "paused"
 
+
+def on_move(x, y):
+   QAccepter.userActive = True
+   QAccepter.lastActive = time.time()
+
+def select_champ(champ: str, w: pygetwindow.Win32Window):
+    if not isinstance(w, pygetwindow.Win32Window):
+        return
+    click_search(w)
+    ctrl_a_delete()
+    pyautogui.write(champ)
+    time.sleep(1)
+    click_champ(w)
 
 def click_champ(w: pygetwindow.Win32Window):
     if not isinstance(w, pygetwindow.Win32Window):

@@ -6,7 +6,7 @@ import pygetwindow
 
 w = pygetwindow.getWindowsWithTitle("League of Legends")[0]
 print(w.left, w.top)
-s = findLocaction("lockin", w)
+s = findLocation("lockin", w)
 print(s)
 quit()
 
@@ -24,5 +24,5 @@ listener.start()
 
 #1170, 730
 
-#532 128 window corner
+#320 160 window corner
 #search 1350, 230
