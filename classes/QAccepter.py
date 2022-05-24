@@ -45,31 +45,18 @@ class QAccepter:
         while(True and not self.__paused):
             self.__checkUserActive()
             apps = pygetwindow.getAllTitles()
-            w = pygetwindow.getWindowsWithTitle("League of Legends")
-            if len(w) != 0:
-                w = w[0]
-            else:
-                w = None
+            w = get_lol_window()
+
             if("League of Legends (TM) Client" in apps and not self.__paused):
                 self.__state = "ingame"
-                time.sleep(2)
+                time.sleep(5)
             elif("League of Legends" in apps and not self.__paused):
-                if self.__state == "select":
-                    if not QAccepter.userActive and self.ban_champ != "" and findLocation("ban", w):
-                        select_champ(self.ban_champ, w)
-                        click_lockin_or_ban(w)
-                    elif not QAccepter.userActive and self.pick_champ != "" and findLocation("lockin", w):
-                        select_champ(self.pick_champ, w)
-                        self.__state = "lockin"
-                    else:
-                        self.__state = "online"
-                elif self.__state == "lockin" and not QAccepter.userActive:
+                if not QAccepter.userActive and self.pick_champ != "" and findLocation("lockin", w):
+                    select_champ(self.pick_champ, w)
                     click_lockin_or_ban(w)
-                    time.sleep(1)
-                    if findLocation("lockin", w) == None:
-                        self.__state = "online"
-                elif not QAccepter.userActive and findLocation("search_champ", w):
-                    self.__state = "select"
+                elif not QAccepter.userActive and self.ban_champ != "" and findLocation("ban", w):
+                    select_champ(self.ban_champ, w)
+                    click_lockin_or_ban(w)
                 else:
                     clickLocation("accept", w)
                     self.__state = "online"
@@ -85,36 +72,9 @@ def on_move(x, y):
    QAccepter.userActive = True
    QAccepter.lastActive = time.time()
 
-def select_champ(champ: str, w: pygetwindow.Win32Window):
-    if not isinstance(w, pygetwindow.Win32Window):
-        return
-    click_search(w)
-    ctrl_a_delete()
-    pyautogui.write(champ)
-    time.sleep(1)
-    click_champ(w)
-
-def click_champ(w: pygetwindow.Win32Window):
-    if not isinstance(w, pygetwindow.Win32Window):
-        return
-    pyautogui.click(w.left + 390 * w.width/1280, w.top + 165 * w.height/720, 2)
-
-def click_search(w: pygetwindow.Win32Window):
-    if not isinstance(w, pygetwindow.Win32Window):
-        return
-    pyautogui.click(w.left + 820 * w.width/1280, w.top + 100 * w.height/720, 2)  # click search
-
-def click_lockin_or_ban(w: pygetwindow.Win32Window):
-    if not isinstance(w, pygetwindow.Win32Window):
-        return
-    pyautogui.click(w.left + 640 * w.width/1280, w.top + 602 * w.height/720, 2) #click ban
-
-
-def ctrl_a_delete():
-    pyautogui.keyDown("ctrl")
-    pyautogui.keyDown("a")
-    pyautogui.keyUp("ctrl")
-    pyautogui.keyUp("a")
-    pyautogui.keyDown("delete")
-    pyautogui.keyUp("delete")
-   
+def get_lol_window():
+    w = pygetwindow.getWindowsWithTitle("League of Legends")
+    if len(w) != 0 and w[0].left > 0:
+        return w[0]
+    else:
+        return None

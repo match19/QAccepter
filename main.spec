@@ -5,6 +5,7 @@ block_cipher = None
 
 added_files = [
          ( 'action/*.PNG', 'action' ),
+         ( 'icon/*.ico', 'icon' ),
          ( 'main.ui', '.' )
          ]
 
@@ -41,4 +42,5 @@ exe = EXE(pyz,
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,
-          entitlements_file=None )
+          entitlements_file=None,
+          icon='icon/fav.ico' )

@@ -1,3 +1,4 @@
+import time
 from typing import Tuple
 from PIL import ImageGrab
 import pyautogui
@@ -61,3 +62,37 @@ def clickLocation(filename: str, win: pygetwindow.Win32Window) -> bool:
         pyautogui.click(win.left+x+width/2, win.top+y+height/2, 2)
         return True
     return False
+
+def click_champ(w: pygetwindow.Win32Window):
+    if not isinstance(w, pygetwindow.Win32Window):
+        return
+    pyautogui.click(w.left + 390 * w.width/1280, w.top + 165 * w.height/720, 2)
+
+def click_search(w: pygetwindow.Win32Window):
+    if not isinstance(w, pygetwindow.Win32Window):
+        return
+    pyautogui.click(w.left + 820 * w.width/1280, w.top + 100 * w.height/720, 2)  # click search
+
+def click_lockin_or_ban(w: pygetwindow.Win32Window):
+    if not isinstance(w, pygetwindow.Win32Window):
+        return
+    pyautogui.click(w.left + 640 * w.width/1280, w.top + 602 * w.height/720, 2) #click ban
+
+
+def select_champ(champ: str, w: pygetwindow.Win32Window):
+    if not isinstance(w, pygetwindow.Win32Window):
+        return
+    click_search(w)
+    ctrl_a_delete()
+    pyautogui.write(champ)
+    time.sleep(1)
+    click_champ(w)
+
+
+def ctrl_a_delete():
+    pyautogui.keyDown("ctrl")
+    pyautogui.keyDown("a")
+    pyautogui.keyUp("ctrl")
+    pyautogui.keyUp("a")
+    pyautogui.keyDown("delete")
+    pyautogui.keyUp("delete")
