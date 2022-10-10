@@ -53,9 +53,11 @@ class QAccepter:
             elif("League of Legends" in apps and not self.__paused):
                 if not QAccepter.userActive and self.pick_champ != "" and findLocation("lockin", w):
                     select_champ(self.pick_champ, w)
+                    time.sleep(2)
                     click_lockin_or_ban(w)
                 elif not QAccepter.userActive and self.ban_champ != "" and findLocation("ban", w):
                     select_champ(self.ban_champ, w)
+                    time.sleep(2)
                     click_lockin_or_ban(w)
                 else:
                     clickLocation("accept", w)

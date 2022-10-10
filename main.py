@@ -24,10 +24,6 @@ class App(QWidget):
       self.qaccepter.start()
       self.load_buttons()
 
-   
-   def keyPressEvent(self, e):
-      print("pressed")
-
    def mousePressEvent(self, e):
       self.setFocus()
 

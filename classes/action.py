@@ -85,7 +85,7 @@ def select_champ(champ: str, w: pygetwindow.Win32Window):
     click_search(w)
     ctrl_a_delete()
     pyautogui.write(champ)
-    time.sleep(1)
+    time.sleep(2)
     click_champ(w)
 
 
